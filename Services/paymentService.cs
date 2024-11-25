@@ -12,9 +12,9 @@ namespace EdiRetrieval.Services
     {
         private readonly ILogger<PaymentServiceBusProcessor> _logger;
         private readonly IConfiguration _configuration;
-        private readonly string _serviceBusConnectionString;
-        private readonly string _topicName;
-        private readonly string _subscriptionName;
+        private static readonly string _serviceBusConnectionString = Environment.GetEnvironmentVariable("AzureServiceBus_ConnectionString");
+        private static readonly string _topicName=Environment.GetEnvironmentVariable("AzureServiceBus_QueueName");
+        private static readonly string _subscriptionName=Environment.GetEnvironmentVariable("AzureServiceBus_SubscriptionName");
         private ISubscriptionClient _subscriptionClient;
         private readonly ApplicationDbContext _context;
 
@@ -23,9 +23,9 @@ namespace EdiRetrieval.Services
             _logger = logger;
             _configuration = configuration;
             _context = context;
-            _serviceBusConnectionString = _configuration["AzureServiceBus:ConnectionString"];
-            _topicName = _configuration["AzureServiceBus:QueueName"];
-            _subscriptionName = _configuration["AzureServiceBus:SubscriptionName"];
+            // _serviceBusConnectionString = _configuration["AzureServiceBus:ConnectionString"];
+            // _topicName = _configuration["AzureServiceBus:QueueName"];
+            // _subscriptionName = _configuration["AzureServiceBus:SubscriptionName"];
         }
 
         public async Task StartProcessingMessagesAsync()
