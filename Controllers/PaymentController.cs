@@ -6,6 +6,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
 namespace EdiRetrieval.Controllers
 {
@@ -16,8 +17,8 @@ namespace EdiRetrieval.Controllers
         private readonly ILogger<PaymentController> _logger;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
-        private readonly string _serviceBusConnectionString;
-        private readonly string _topicName;
+        private static readonly string ServiceBusConnectionString = Environment.GetEnvironmentVariable("AzureServiceBus_ConnectionString");
+        private static readonly string TopicName = Environment.GetEnvironmentVariable("AzureServiceBus_QueueName");
         private ITopicClient _topicClient;
 
         public PaymentController(ILogger<PaymentController> logger, IConfiguration configuration, ApplicationDbContext context)
@@ -25,8 +26,8 @@ namespace EdiRetrieval.Controllers
             _logger = logger;
             _configuration = configuration;
             _context = context;
-            _serviceBusConnectionString = _configuration["AzureServiceBus:ConnectionString"];
-            _topicName = _configuration["AzureServiceBus:QueueName"];
+
+            Env.Load();
         }
 
         [HttpPost("initiate")]
@@ -34,6 +35,8 @@ namespace EdiRetrieval.Controllers
         {
             try
             {
+                var _serviceBusConnectionString = ServiceBusConnectionString;
+                var _topicName = TopicName;
                 if (paymentRequest == null || string.IsNullOrEmpty(paymentRequest.Id) || paymentRequest.Fees <= 0)
                 {
                     _logger.LogError("Invalid payment request received.");
