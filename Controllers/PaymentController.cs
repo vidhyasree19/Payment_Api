@@ -37,6 +37,7 @@ namespace EdiRetrieval.Controllers
             {
                 var _serviceBusConnectionString = ServiceBusConnectionString;
                 var _topicName = TopicName;
+                System.Console.WriteLine(_serviceBusConnectionString,_topicName);
                 if (paymentRequest == null || string.IsNullOrEmpty(paymentRequest.Id) || paymentRequest.Fees <= 0)
                 {
                     _logger.LogError("Invalid payment request received.");
